@@ -48,44 +48,7 @@ The extracted information is saved in an organized manner or can be [exported as
 
 ![save demo](https://image.ibb.co/dS1BqK/carbon_2.png)
 
-#### Flexible
-Control timeout, delay, add seeds, exclude URLs matching a regex pattern and other cool stuff.
-The extensive range of [options](https://github.com/s0md3v/Photon/wiki/Usage) provided by Photon lets you crawl the web exactly the way you want.
-
-#### Genius
-Photon's smart thread management & refined logic gives you top notch performance.
-
-Still, crawling can be resource intensive but Photon has some tricks up it's sleeves. You can fetch URLs archived by [archive.org](https://archive.org/) to be used as seeds by using `--wayback` option.
-
-#### Plugins
-- **[wayback](https://github.com/s0md3v/Photon/wiki/Usage#use-urls-from-archiveorg-as-seeds)**
-- **[dnsdumpster](https://github.com/s0md3v/Photon/wiki/Usage#dumping-dns-data)**
-- **[Exporter](https://github.com/s0md3v/Photon/wiki/Usage#export-formatted-result)**
-
 #### Docker
-
-Photon ships as a lightweight, multi-architecture Docker image published to the GitHub Container Registry (GHCR). The image is built for both `linux/amd64` and `linux/arm64`, so it runs natively on Linux servers, Intel Macs **and Apple Silicon (M1/M2/M3/M4)** without emulation.
-
-Crawl results are written to `/app/data` inside the container — mount a local folder there to access them on your host.
-
-**Supported platforms**
-
-| Platform | Architecture | Status |
-|----------|--------------|--------|
-| Linux    | `amd64`      | Native |
-| Linux    | `arm64`      | Native |
-| macOS (Intel)         | `amd64` | Native |
-| macOS (Apple Silicon) | `arm64` | Native |
-| Windows (WSL2)        | `amd64` | Native |
-
-**Available tags**
-
-| Tag                  | Description                                |
-|----------------------|--------------------------------------------|
-| `master` / `main`    | Latest commit on the default branch        |
-| `vX.Y.Z`             | Specific release version                   |
-| `X.Y`                | Latest patch of a minor release            |
-| `sha-<commit>`       | Build pinned to a specific commit          |
 
 **Pull & run the prebuilt image**
 ```bash
