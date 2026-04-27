@@ -163,6 +163,7 @@ internal = set(args.seeds)
 everything = []
 bad_scripts = set()  # Unclean javascript file urls
 bad_intel = set() # needed for intel filtering
+wellknown = {}  # filename -> raw content for security.txt / llms.txt etc.
 
 core.config.verbose = verbose
 
@@ -310,8 +311,8 @@ def jscanner(url):
 # Records the time at which crawling started
 then = time.time()
 
-# Step 1. Extract urls from robots.txt & sitemap.xml
-zap(main_url, args.archive, domain, host, internal, robots, proxies)
+# Step 1. Extract urls from robots.txt & sitemap.xml; fetch security.txt & llms.txt
+zap(main_url, args.archive, domain, host, internal, robots, proxies, wellknown)
 
 # This is so the level 1 emails are parsed as well
 internal = set(remove_regex(internal, args.exclude))
@@ -386,6 +387,11 @@ if not args.output:  # Only create data directory structure when using default o
         os.makedirs(data_dir)
 if not os.path.exists(output_dir): # if the directory doesn't exist
     os.makedirs(output_dir) # create a new directory (use makedirs for nested dirs)
+
+# Persist raw well-known files (security.txt, llms.txt, ...)
+for wk_name, wk_body in wellknown.items():
+    with open(output_dir + '/' + wk_name, 'w+', encoding='utf-8') as wk_file:
+        wk_file.write(wk_body)
 
 datasets = [files, intel, robots, custom, failed, internal, scripts,
             external, fuzzable, endpoints, keys]

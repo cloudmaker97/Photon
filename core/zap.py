@@ -7,8 +7,8 @@ from core.colors import run, good
 from plugins.wayback import time_machine
 
 
-def zap(input_url, archive, domain, host, internal, robots, proxies):
-    """Extract links from robots.txt and sitemap.xml."""
+def zap(input_url, archive, domain, host, internal, robots, proxies, wellknown=None):
+    """Extract links from robots.txt and sitemap.xml; fetch security.txt and llms.txt."""
     if archive:
         print('%s Fetching URLs from archive.org' % run)
         if False:
@@ -55,3 +55,35 @@ def zap(input_url, archive, domain, host, internal, robots, proxies):
                 # Cleaning up the URL and adding it to the internal list for
                 # crawling
                 internal.add(match)
+
+    # Fetch well-known files: security.txt (RFC 9116) and llms.txt
+    if wellknown is None:
+        return
+    wellknown_targets = [
+        ('security.txt', '/.well-known/security.txt'),
+        ('security.txt', '/security.txt'),  # legacy fallback
+        ('llms.txt', '/llms.txt'),
+        ('llms-full.txt', '/llms-full.txt'),
+    ]
+    for filename, path in wellknown_targets:
+        if filename in wellknown:
+            # Already populated (e.g. .well-known took precedence over root)
+            continue
+        try:
+            resp = requests.get(input_url + path,
+                                proxies=random.choice(proxies),
+                                timeout=10)
+        except Exception:
+            continue
+        if resp.status_code != 200:
+            continue
+        body = resp.text
+        # Skip HTML 404/soft-404 pages
+        if '<body' in body.lower() or '<html' in body.lower():
+            continue
+        if not body.strip():
+            continue
+        wellknown[filename] = body
+        url = input_url + path
+        internal.add(url)
+        print('%s Retrieved %s from %s' % (good, filename, path))
